@@ -42,8 +42,8 @@ public class AutoEncoderNN extends NeuralNet {
 		IntStream.range(0, nils).forEach(k->{
 			data[k] = this.neurons[0].forward(ils.image.getContent(k));
 		});
-		float[][] out = denoising(data, nils, shaper);
-		return new AutoEncoderImageSet(nils, neurons[0].getOutn(), data, out);
+		float[][] in = denoising(data, nils, shaper);
+		return new AutoEncoderImageSet(nils, neurons[0].getOutn(), in, data);
 	}
 
 	// create AutoEncoderImageSet from ImageLabelSet
