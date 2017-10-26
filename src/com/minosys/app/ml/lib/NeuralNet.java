@@ -156,7 +156,9 @@ public class NeuralNet {
 		});
 		IntStream.range(0, nset).forEach(i->{
 			backPropagate(ils, samples);
-			if (i % 10 == 0) System.out.print(".");
+			if (i % 10 == 0) {
+					System.out.print(".");
+			}
 		});
 		return samples;
 	}

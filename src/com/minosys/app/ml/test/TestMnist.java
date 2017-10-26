@@ -7,7 +7,7 @@ import com.minosys.app.ml.lib.MNIST;
 import com.minosys.app.ml.lib.NeuralNet;
 import com.minosys.app.ml.lib.QuadLossFunction;
 
-public class TestMnist {
+public class TestMnist extends BaseTest {
 	private static final int[] LAYERS = {768, 100, 10}; // 1 hidden layer
 	private static final int BATCHSIZE = 200;
 	private static final int NSET = 200;
