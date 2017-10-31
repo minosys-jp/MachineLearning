@@ -23,7 +23,7 @@ public class TestAutoEncoder extends BaseTest {
 	MNIST mnist;
 
 	public TestAutoEncoder() throws IOException {
-		this.mnist = MNIST.load_train(true, false);
+		this.mnist = MNIST.load_train(true, true);
 		this.nn = new NeuralNet(new QuadLossFunction(), LRATE, LAYERS);
 	}
 
@@ -31,7 +31,10 @@ public class TestAutoEncoder extends BaseTest {
 		AutoEncoderTrainer aetrain = new AutoEncoderTrainer(new QuadLossFunction(), LRATE, NLINE, NSET, BATCHSIZE);
 		AutoEncoderImageSet aeimage = AutoEncoderNN.createImageSet(mnist);
 		aetrain.setTeacher(aeimage, null);
+		aetrain.setLabels(mnist);
+		recordTime();
 		aetrain.train(nn);
+		System.out.printf("elapsed time: %.3f sec", recordTime());
 	}
 
 	public void check(int n, int batchsize, int loop) {
@@ -41,7 +44,7 @@ public class TestAutoEncoder extends BaseTest {
 			out[k] = nn.forward(mnist.image.getContent(samples[k]));
 		});
 		MNIST.MNISTLabel lb = (MNIST.MNISTLabel)mnist.label;
-		showAccuracy(loop, out, lb.b, samples);
+		showAccuracy(loop, out, lb.getContent(), samples);
 	}
 
 	public void check(int n, int bs) {

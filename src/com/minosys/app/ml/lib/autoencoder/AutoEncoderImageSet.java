@@ -13,9 +13,14 @@ import com.minosys.app.ml.lib.ImageLabelSet;
  *
  */
 public class AutoEncoderImageSet extends ImageLabelSet {
+	public AutoEncoderImageSet(int n, int w1, int w2, float[][] images, float[][] labels) {
+		super();
+		image = new AutoEncoderImage(n, w1, images);
+		label = new AutoEncoderLabel(n, w2, labels);
+	}
+
 	public AutoEncoderImageSet(int n, int w, float[][] images, float[][] labels) {
-		image = new AutoEncoderImage(n, w, images);
-		label = new AutoEncoderLabel(n, w, labels);
+		this(n, w, w, images, labels);
 	}
 
 	public AutoEncoderImageSet(int w, ILoader images, ILoader labels) {

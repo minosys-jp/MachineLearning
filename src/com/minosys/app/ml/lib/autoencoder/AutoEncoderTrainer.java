@@ -10,7 +10,7 @@ import com.minosys.app.ml.lib.ImageLabelSet;
 import com.minosys.app.ml.lib.NeuralNet;
 
 public class AutoEncoderTrainer implements INNTrainer {
-	ImageLabelSet ils, cils;
+	ImageLabelSet ils, cils, lastIls;
 	AutoEncoderNN ann;
 	ILossFunction loss;
 	int nset, batchsize, nline;
@@ -51,8 +51,8 @@ public class AutoEncoderTrainer implements INNTrainer {
 	public void train(NeuralNet nn) {
 		// TODO 自動生成されたメソッド・スタブ
 
-		IntStream.range(0, nn.neurons.length).forEachOrdered(k->{
-			// compensate with AutoEncoders
+		IntStream.range(0, nn.neurons.length - 1).forEachOrdered(k->{
+			// correct with AutoEncoders
 			AutoEncoderNN ann;
 			try {
 				ann = new AutoEncoderNN(loss, lrate, nn.neurons[k].getInn(), nn.neurons[k].getOutn());
@@ -69,7 +69,32 @@ public class AutoEncoderTrainer implements INNTrainer {
 			}
 		});
 
-		// teacher label not used
+		// last level use teacher labels
+		try {
+			int nl = nn.neurons.length - 1;
+			int[] layer = { nn.neurons[nl - 1].getInn(), nn.neurons[nl].getOutn() };
+			NeuralNet nntmp = new NeuralNet(loss, lrate, layer);
+			AutoEncoderImageSet ilstmp = new AutoEncoderImageSet(cils.getQuantity(), cils.image.getWidth(),
+					lastIls.label.getOutputCount(), cils.image.getContent(), lastIls.label.getContent());
+			IntStream.range(0,  nline).forEach(m->{
+				nntmp.backPropagate(ilstmp, nset, batchsize);
+			});
+			nn.neurons[nl].b = nntmp.neurons[0].b;
+			nn.neurons[nl].w = nntmp.neurons[0].w;
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			new RuntimeException(e);
+		}
+
+		// fine tuning
+		System.out.println("...now proceeding fine tuning");
+		nn.backPropagate(ils, nset, batchsize);
+	}
+
+	@Override
+	public void setLabels(ImageLabelSet lastIls) {
+		// TODO 自動生成されたメソッド・スタブ
+		this.lastIls = lastIls;
 	}
 
 }
