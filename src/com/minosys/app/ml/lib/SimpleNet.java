@@ -79,22 +79,24 @@ public class SimpleNet {
 	 */
 	public float[] calc_deriv_b(final float[] outer, boolean bMostouter) {
 
-		float[] r = new float[outz.length];
 		if (!bMostouter) {
+			float[] r = new float[inn];
 			// intermediate nodes
 			IntStream.range(0, outz.length).parallel().forEach(j->{
-				r[j] += IntStream.range(0, outer.length).mapToDouble(k->w[k][j] * outer[k]).sum();
+				r[j] += IntStream.range(0, outer.length).mapToDouble(k->w[j][k] * outer[k]).sum();
 			});
-			IntStream.range(0,  outz.length).forEach(j->{
-				r[j] *= sigmoid_deriv(outz[j]);
+			IntStream.range(0,  inz.length).forEach(j->{
+				r[j] *= sigmoid_deriv(inz[j]);
 			});
+			return r;
 		} else {
+			float[] r = new float[outn];
 			// outer-most nodes
 			IntStream.range(0, outz.length).forEach(j->{
 				r[j] = loss.derivative(outer[j], outz[j]);
 			});
+			return r;
 		}
-		return r;
 	}
 
 	/**

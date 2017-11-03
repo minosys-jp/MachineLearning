@@ -92,7 +92,7 @@ public class NeuralNet {
 		wderiv[m] = neurons[m].calc_deriv_w(z[m], bderiv[m]);
 		// hidden layer derivatives
 		while ( --m >= 0) {
-			bderiv[m] = neurons[m].calc_deriv_b(bderiv[m + 1], false);
+			bderiv[m] = neurons[m + 1].calc_deriv_b(bderiv[m + 1], false);
 			wderiv[m] = neurons[m].calc_deriv_w(z[m], bderiv[m]);
 		}
 
