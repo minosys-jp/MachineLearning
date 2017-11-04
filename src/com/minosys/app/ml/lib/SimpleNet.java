@@ -82,7 +82,7 @@ public class SimpleNet {
 		if (!bMostouter) {
 			float[] r = new float[inn];
 			// intermediate nodes
-			IntStream.range(0, outz.length).parallel().forEach(j->{
+			IntStream.range(0, inz.length).parallel().forEach(j->{
 				r[j] += IntStream.range(0, outer.length).mapToDouble(k->w[j][k] * outer[k]).sum();
 			});
 			IntStream.range(0,  inz.length).forEach(j->{
